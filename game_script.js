@@ -1,3 +1,7 @@
+let scorePlayer = 0;
+let scoreComputer = 0;
+let stillPlaying = true;
+
 function computerPlay() {
 	let computerChoice = ["Rock", "Paper", "Scissors"]; 
 	return computerChoice[randomNumber(computerChoice.length)] ;
@@ -8,41 +12,75 @@ function randomNumber(a) {
 }
 
 function captalize (a) {
-	return a.charAt(0).toUpperCase() + a.slice(1).toLowerCase();
+	return a.slice(0,1).toUpperCase() + a.slice(1).toLowerCase();
+}
+
+function someOneWins () {
+	let messageText = "won the Game! Game Over! To play again, please refresh.";
+	 if(scorePlayer>=5){
+	 	stillPlaying = !stillPlaying; 
+	 	return "You " + messageText;
+	 } 
+	 if(scoreComputer>=5){
+	 	stillPlaying = !stillPlaying; 
+	 	return "The Computer " + messageText;
+	 }
+	 if(scorePlayer<5 && scoreComputer<5) return "";
+}
+
+function gameInfo(resultText,scoreText){
+	let endGameText = someOneWins();
+	let scoreTextDispay = scoreText;
+	const results = document.querySelector('.results');
+	const score = document.querySelector('.score');
+	
+	results.textContent = resultText;
+	score.textContent = scoreText;
+
+		
+	if (endGameText !== '') {
+		const endGame = document.querySelector('.end_game');
+		endGame.textContent = endGameText;
+	}
 }
 
 function playRound(playerSelection, computerSelection) {
-	let playerWin = false; 
-	playerSelection = captalize(playerSelection);
-	computerSelection = captalize(computerSelection);
-	playerWin = ((playerSelection == "Rock" && computerSelection == "Scissors") || (playerSelection == "Paper" && computerSelection == "Rock") || (playerSelection == "Scissors" && computerSelection == "Paper"))
-	
-	/*
-	if (playerSelection == "Rock" && computerSelection == "Scissors") {
-		playerWin = true;
-	}
+	if(stillPlaying){
+		let playerWin = false; 
+		let resultText = '';
+		let scoreText = '';
+		let endGameText = '';
+		playerSelection = captalize(playerSelection);
+		computerSelection = captalize(computerSelection);
+		playerWin = ((playerSelection == "Rock" && computerSelection == "Scissors") || (playerSelection == "Paper" && computerSelection == "Rock") || (playerSelection == "Scissors" && computerSelection == "Paper"))
 
-	if (playerSelection == "Paper" && computerSelection == "Rock") {
-		playerWin = true;
+		if (playerWin == true) {
+			resultText = `You win! ${playerSelection} beats ${computerSelection}.`;
+			scorePlayer +=1;
+		}
+		else if (playerSelection == computerSelection){
+			resultText = `It\'s a draw! ${computerSelection} can\'t loose or beat ${playerSelection}.`;
+		}
+		else {
+			resultText = `You loose! ${computerSelection} beats ${playerSelection}.`;
+			scoreComputer +=1;
+		}
+		scoreText = `Your Score: ${scorePlayer}	Computer Score: ${scoreComputer}`;
+		
+		gameInfo(resultText,scoreText);
+		return playerWin;
 	}
-	
-	if (playerSelection == "Scissors" && computerSelection == "Paper") {
-		playerWin = true;
-	}
-	*/
-	if (playerWin == true) {
-		console.log(`You win! ${playerSelection} beats ${computerSelection}.`);
-	}
-	else if (playerSelection == computerSelection){
-		console.log(`It\'s a draw! ${computerSelection} can\'t loose or beat ${playerSelection}.`);
-	}
-	else {
-		console.log(`You loose! ${computerSelection} beats ${playerSelection}.`);
-	}
-
-	return playerWin;
 }
 
+const buttons = document.querySelectorAll('button');
+buttons.forEach((button) => {
+ button.addEventListener('click', (e) => {
+ 	let playerSelection = button.id.toString();
+    playRound(playerSelection,computerPlay());
+  });
+});
+
+/*
 function game() {
 	let rounds = 1;
 	let score = 0;
@@ -62,3 +100,4 @@ function game() {
 	}
 	console.log(`Your SCORE: ${score}`);
 }
+*/
